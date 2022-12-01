@@ -1,0 +1,13 @@
+version: '3.6'
+services:
+  db:
+    container_name: ngapi
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: ramiro
+      POSTGRES_DB: NG
+    volumes:
+      - ./pgdata:/data/postgresql
+    ports:
+      - "5433:5432"
