@@ -1,12 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm"
 import { Accounts } from "./Accounts"
 
 @Entity()
 export class Users {
 
-    constructor(username: string, password: string) {
+    constructor(username: string, password: string, account: Accounts) {
         this.username = username
         this.password = password
+        this.account = account
     }
 
     @PrimaryGeneratedColumn()
@@ -18,7 +19,7 @@ export class Users {
     @Column()
     password: string
 
-    @OneToOne(() => Accounts)
-    accountId: Accounts
+    @OneToOne((type) => Accounts, account => account.id) @JoinColumn()
+    account: Accounts
 
 }

@@ -3,12 +3,7 @@ import { Transactions } from "../entity/Transactions";
 
 export class TransactionController {
 
-  async credit(transaction: Transactions) {
-    const transactionSave = await AppDataSource.manager.save(transaction)
-    return transactionSave
-  }
-
-  async debit(transaction: Transactions) {
+  async update(transaction: Transactions) {
     const transactionSave = await AppDataSource.manager.save(transaction)
     return transactionSave
   }

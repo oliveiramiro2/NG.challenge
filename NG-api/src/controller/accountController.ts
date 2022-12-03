@@ -15,13 +15,11 @@ export class AccountController {
   }
 
   async recoverAccountById(id: number) {
-    const account = await AppDataSource.manager.findOne(Accounts, {where: {id: id}, relations: ['creditedId', 'debitedId']})
-    console.log('1', account, id)
+    const account = await AppDataSource.manager.getRepository(Accounts).findOneBy({id: id})
     return account
   }
 
   async update(account: Accounts, value: number) {
-    console.log('2', account)
     if(account !== null){
       const update = await AppDataSource.manager.update(Accounts, account.id, {balance: account.balance + value})
       return update

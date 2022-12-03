@@ -9,7 +9,12 @@ export class userController {
   }
 
   async recoverAllUsers() {
-    const users = await AppDataSource.manager.find(Users)
+    const users = await AppDataSource.manager.find(Users, {relations: ['account']})
     return users
+  }
+
+  async recoverUserById(id: number) {
+    const user = await AppDataSource.manager.findOne(Users, {relations: ['account'], where: {id: id}})
+    return user
   }
 }
