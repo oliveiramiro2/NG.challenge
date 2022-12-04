@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import NGRoutes from "./routes";
-import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter } from "react-router-dom";
 
+import reportWebVitals from "./reportWebVitals";
+import NGRoutes from "./routes";
 import AuthProvider from "./services/auth";
 
 const root = ReactDOM.createRoot(
@@ -10,9 +11,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
     <React.StrictMode>
-        <AuthProvider>
-            <NGRoutes />
-        </AuthProvider>
+        <BrowserRouter>
+            <AuthProvider>
+                <NGRoutes />
+            </AuthProvider>
+        </BrowserRouter>
     </React.StrictMode>
 );
 
