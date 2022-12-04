@@ -1,14 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import SingIn from "./screens/public/SingIn";
+import NGRoutes from "./routes";
 import reportWebVitals from "./reportWebVitals";
+
+import AuthProvider from "./services/auth";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
 );
 root.render(
     <React.StrictMode>
-        <SingIn />
+        <AuthProvider>
+            <NGRoutes />
+        </AuthProvider>
     </React.StrictMode>
 );
 
