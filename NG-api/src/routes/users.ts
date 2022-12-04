@@ -1,3 +1,5 @@
+
+import { hash } from "bcrypt"
 import { Router } from "express"
 import { AccountController } from "../controller/accountController"
 import { TransactionController } from "../controller/TransactionController"
@@ -14,16 +16,27 @@ const transactionsCtrl = new TransactionController()
 userRouter.post('/', async (req, res) => {
   const { username, password } = req.body
 
-  const account = new Accounts(100)
-  const saveAccount = await accountCtrl.create(account)
+  const haveSameUsername = await userCtrl.checkUsernameIsUnique(username)
 
-  const transaction = new Transactions(100, new Date(), saveAccount)
-  const saveTransaction = await transactionsCtrl.update(transaction)
+  const regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/
 
-  const user = new Users(username, password, saveAccount)
-  const saveUser = await userCtrl.save(user)
+  if(username.length > 2 && !haveSameUsername && regexPassword.test(password)){
+    const hashPassword = await hash(password, 8)
+    const account = new Accounts(100)
+    const saveAccount = await accountCtrl.create(account)
 
-  res.json([saveUser, saveTransaction])
+    const transaction = new Transactions(100, new Date(), saveAccount)
+    const saveTransaction = await transactionsCtrl.update(transaction)
+
+    const user = new Users(username, hashPassword, saveAccount)
+    const saveUser = await userCtrl.save(user)
+
+    res.json([saveUser, saveTransaction])
+  }else{
+    regexPassword.test(password)
+    ? res.status(404).json({mesage: "Error the username must to be higher than 2 characters and unique"})
+    : res.status(404).json({mesage: "The pattern of password is not right"})
+  }
 })
 
 userRouter.get('/', async (req, res) => {
