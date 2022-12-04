@@ -13,7 +13,11 @@ export class userController {
     return users
   }
 
-  
+  async recoverByName(username: string) {
+    const usernameCheck = await AppDataSource.manager.findOne(Users, {where: {username: username}})
+    return usernameCheck
+  }
+
   async checkUsernameIsUnique(usernameToCheck: string) {
     const allUsers = await this.recoverAllUsersToCheck()
     let haveSameUsername = false

@@ -1,6 +1,7 @@
 
-import { hash } from "bcrypt"
+import { compare, hash } from "bcrypt"
 import { Router } from "express"
+import { sign } from "jsonwebtoken"
 import { AccountController } from "../controller/accountController"
 import { TransactionController } from "../controller/TransactionController"
 import { userController } from "../controller/userController"
@@ -13,12 +14,33 @@ const userCtrl = new userController()
 const accountCtrl = new AccountController()
 const transactionsCtrl = new TransactionController()
 
+const regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/
+
+userRouter.post('/login', async (req, res) => {
+  const { username, password } = req.body
+  const checkedUsername = await userCtrl.recoverByName(username)
+
+  if(checkedUsername && regexPassword.test(password)) {
+    const comparedPassword = compare(password, checkedUsername.password)
+    if(comparedPassword){
+      const token = sign({
+        username: checkedUsername.username,
+        password: checkedUsername.password,
+        id: checkedUsername.id
+      }, 'the sun is small', {expiresIn: "1d"})
+      res.json({token})
+    }else{
+      res.status(401).json('The credentials are wrong')
+    }
+  }else{
+    res.status(401).json('The credentials are wrong')
+  }
+})
+
 userRouter.post('/', async (req, res) => {
   const { username, password } = req.body
 
   const haveSameUsername = await userCtrl.checkUsernameIsUnique(username)
-
-  const regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/
 
   if(username.length > 2 && !haveSameUsername && regexPassword.test(password)){
     const hashPassword = await hash(password, 8)

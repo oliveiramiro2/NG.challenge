@@ -7,9 +7,4 @@ export class TransactionController {
     const transactionSave = await AppDataSource.manager.save(transaction)
     return transactionSave
   }
-
-  async recoverTransactions() {
-    const transactions = await AppDataSource.manager.find(Transactions)
-    return transactions
-  }
 }

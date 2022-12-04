@@ -1,6 +1,5 @@
 import { AppDataSource } from "../data-source";
 import { Accounts } from "../entity/Accounts";
-import { Transactions } from "../entity/Transactions";
 
 export class AccountController {
 
@@ -19,9 +18,18 @@ export class AccountController {
     return account
   }
 
+  async recoverAccountWithTransactions(id: number) {
+    const account = await AppDataSource.manager.findOne(Accounts, {
+      relations: ['transaction'], where: {id: id}
+    })
+    return account
+  }
+
   async update(account: Accounts, value: number) {
     if(account !== null){
-      const update = await AppDataSource.manager.update(Accounts, account.id, {balance: account.balance + value})
+      const update = await AppDataSource.manager.update(Accounts, account.id, {
+        balance: account.balance + value
+      })
       return update
     }
   }
