@@ -7,8 +7,8 @@ import HomePublic from "../../screens/public/Home";
 
 const PublicRoutes: React.FC = () => (
     <Routes>
-        <Route path="/cadastrar" element={<SingUp />} />
         <Route path="/login" element={<SingIn />} />
+        <Route path="/cadastrar" element={<SingUp />} />
         <Route path="/" element={<HomePublic />} />
     </Routes>
 );

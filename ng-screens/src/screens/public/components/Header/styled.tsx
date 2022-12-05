@@ -24,6 +24,8 @@ export const SHeader = styled.header`
     & article a {
         font-weight: bold;
         font-size: 22px;
+        display: flex;
+        align-self: center;
     }
 
     & a {
