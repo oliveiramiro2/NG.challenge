@@ -30,10 +30,10 @@ userRouter.post('/login', async (req, res) => {
       }, 'the sun is small', {expiresIn: "1d"})
       res.json({token})
     }else{
-      res.status(401).json('The credentials are wrong')
+      res.status(401).json({message: 'The credentials are wrong'})
     }
   }else{
-    res.status(401).json('The credentials are wrong')
+    res.status(401).json({message: 'The credentials are wrong'})
   }
 })
 
@@ -56,7 +56,7 @@ userRouter.post('/', async (req, res) => {
     res.json([saveUser, saveTransaction])
   }else{
     regexPassword.test(password)
-    ? res.status(404).json({mesage: "Error the username must to be higher than 2 characters and unique"})
-    : res.status(404).json({mesage: "The pattern of password is not right"})
+    ? res.status(404).json({message: "Error the username must to be higher than 2 characters and unique"})
+    : res.status(404).json({message: "The pattern of password is not right"})
   }
 })

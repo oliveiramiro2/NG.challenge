@@ -50,20 +50,20 @@ const Form: React.FC<IProps> = ({ register }) => {
                 "Seu nome de usuário deve conter no mínimo 3 caracteres",
                 "danger"
             );
+            return;
         }
         if (!regexPassword.test(data.password)) {
             alertMessage(
                 "Sua senha deve conter uma letra minúscula, uma maiuscula e um número. Com o mínimo de 8 caracteres",
                 "danger"
             );
+            return;
         }
 
-        const formData = new FormData();
-        formData.append("username", data.username);
-        formData.append("password", data.password);
+        const dataSend = {username: data.username, password: data.password}
 
         if (register) {
-            api.post("/user", formData)
+            api.post("/user", dataSend)
                 .then(responseReturned => {
                     console.log(responseReturned.data);
                 })
@@ -71,7 +71,7 @@ const Form: React.FC<IProps> = ({ register }) => {
                     console.log(responseReturned);
                 });
         } else {
-            api.get("/user/login", { data: formData })
+            api.post("/user/login", dataSend)
                 .then(responseReturned => {
                     console.log(responseReturned.data);
                 })
