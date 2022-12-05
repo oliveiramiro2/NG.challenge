@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaUserAlt } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
+import { Store } from "react-notifications-component";
+import { api } from "../../../../services/api";
 
 import {
     SbuttonSend,
@@ -17,7 +19,68 @@ interface IProps {
     register: boolean;
 }
 
+interface IData {
+    username: string;
+    password: string;
+}
+
 const Form: React.FC<IProps> = ({ register }) => {
+    const [data, setData] = useState<IData>({} as IData);
+
+    const alertMessage = (msg: string, type: string) => {
+        const typeOfAlert = type === "danger" ? "danger" : "success";
+        Store.addNotification({
+            message: `${msg}`,
+            type: `${typeOfAlert}`,
+            container: "center",
+            insert: "top",
+            animationIn: ["animate__animated", "animate__zoomIn"],
+            animationOut: ["animate__animated", "animate__zoomOut"],
+            dismiss: {
+                duration: 5000,
+                onScreen: true,
+            },
+        });
+    };
+
+    const sendData: Function = () => {
+        const regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+        if (data.username.length < 3) {
+            alertMessage(
+                "Seu nome de usuário deve conter no mínimo 3 caracteres",
+                "danger"
+            );
+        }
+        if (!regexPassword.test(data.password)) {
+            alertMessage(
+                "Sua senha deve conter uma letra minúscula, uma maiuscula e um número. Com o mínimo de 8 caracteres",
+                "danger"
+            );
+        }
+
+        const formData = new FormData();
+        formData.append("username", data.username);
+        formData.append("password", data.password);
+
+        if (register) {
+            api.post("/user", formData)
+                .then(responseReturned => {
+                    console.log(responseReturned.data);
+                })
+                .catch(responseReturned => {
+                    console.log(responseReturned);
+                });
+        } else {
+            api.get("/user/login", { data: formData })
+                .then(responseReturned => {
+                    console.log(responseReturned.data);
+                })
+                .catch(responseReturned => {
+                    console.log(responseReturned);
+                });
+        }
+    };
+
     return (
         <SContainPictureBackground>
             <SContainTransparent>
@@ -30,7 +93,17 @@ const Form: React.FC<IProps> = ({ register }) => {
                         <div>
                             <p>Username</p>
                             <FaUserAlt size="14px" color="#00d841" />
-                            <SInput id="inputUsername" alt="UserName" />
+                            <SInput
+                                id="inputUsername"
+                                alt="UserName"
+                                defaultValue={data.username}
+                                onChange={e =>
+                                    setData({
+                                        ...data,
+                                        username: e.target.value,
+                                    })
+                                }
+                            />
                         </div>
                         <div>
                             <p>Password</p>
@@ -39,10 +112,17 @@ const Form: React.FC<IProps> = ({ register }) => {
                                 id="inputPassword"
                                 alt="Password"
                                 type="password"
+                                defaultValue={data.password}
+                                onChange={e =>
+                                    setData({
+                                        ...data,
+                                        password: e.target.value,
+                                    })
+                                }
                             />
                         </div>
                     </aside>
-                    <SbuttonSend>
+                    <SbuttonSend type="button" onClick={() => sendData()}>
                         <p>{register ? "Cadastrar" : "Entrar"}</p>
                     </SbuttonSend>
                 </SContainForm>
