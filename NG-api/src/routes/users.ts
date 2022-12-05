@@ -60,8 +60,3 @@ userRouter.post('/', async (req, res) => {
     : res.status(404).json({mesage: "The pattern of password is not right"})
   }
 })
-
-userRouter.get('/', async (req, res) => {
-  const allUsers = await userCtrl.recoverAllUsers()
-  res.json(allUsers)
-})
