@@ -36,7 +36,7 @@ const HeaderPrivate: React.FC = () => {
                 </a>
             </article>
             <div>
-                <SALast href="/login">Transferências</SALast>
+                <SALast href="/transacoes">Transferências</SALast>
                 <a href="/" onClick={e => logout(e)}>
                     <IoMdLogOut />
                     Sair

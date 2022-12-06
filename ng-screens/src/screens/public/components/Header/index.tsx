@@ -12,10 +12,10 @@ const HeaderPublic: React.FC = () => {
                 </a>
             </article>
             <div>
-                <SALast href="/login">Entrar</SALast>
-                <a href="/cadastrar">
+                <SALast href="/cadastrar">Registar</SALast>
+                <a href="/login">
                     <IoMdLogIn />
-                    Registar
+                    Entrar
                 </a>
             </div>
         </SHeader>
