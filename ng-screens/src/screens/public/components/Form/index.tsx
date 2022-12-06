@@ -54,7 +54,7 @@ const Form: React.FC<IProps> = ({ register }) => {
         }
         if (!regexPassword.test(data.password)) {
             alertMessage(
-                "Sua senha deve conter uma letra minúscula, uma maiuscula e um número. Com o mínimo de 8 caracteres",
+                "Sua senha deve conter uma letra minúscula, uma maiúscula e um número. Com o mínimo de 8 caracteres",
                 "danger"
             );
             return;
