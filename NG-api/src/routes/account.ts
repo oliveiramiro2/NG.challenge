@@ -15,6 +15,6 @@ accountRouter.get('/', async (req, res) => {
 
     res.json(user.account)
   } catch {
-    res.status(401).json({message: "the token is not valid"})
+    res.status(401).json({message: "The token is not valid"})
   }
 })
