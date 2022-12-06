@@ -2,11 +2,7 @@ import React, { useEffect } from "react";
 import FooterPublic from "../components/Footer";
 import HeaderPublic from "../components/Header";
 
-import {
-    SContainerHome,
-    SContainerContent,
-    SImgHome,
-} from "./styled";
+import { SContainerHome, SContainerContent, SImgHome } from "./styled";
 
 const imgHome = require("../../../assets/imgs/imgHome.png");
 
@@ -23,6 +19,8 @@ const HomePublic: React.FC = () => {
     };
 
     useEffect(() => {
+        document.title = "NG challenge - Home";
+
         const elementText = document.querySelector("#textPublicHome");
         writeInfo(elementText);
     }, []);

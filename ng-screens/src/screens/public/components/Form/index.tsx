@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { FaUserAlt } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { Store } from "react-notifications-component";
-import { api } from "../../../../services/api";
+import * as decode from "jwt-decode";
 
+import { api } from "../../../../services/api";
 import {
     SbuttonSend,
     SContainForm,
@@ -12,6 +13,7 @@ import {
     SImgUser,
     SInput,
 } from "./styled";
+import { AuthContext } from "../../../../services/auth";
 
 const imgUser = require("../../../../assets/imgs/user.png");
 
@@ -26,6 +28,8 @@ interface IData {
 
 const Form: React.FC<IProps> = ({ register }) => {
     const [data, setData] = useState<IData>({} as IData);
+
+    const { setLogined, setUserData } = useContext(AuthContext);
 
     const alertMessage = (msg: string, type: string) => {
         const typeOfAlert = type === "danger" ? "danger" : "success";
@@ -60,23 +64,33 @@ const Form: React.FC<IProps> = ({ register }) => {
             return;
         }
 
-        const dataSend = {username: data.username, password: data.password}
+        const dataSend = { username: data.username, password: data.password };
 
         if (register) {
             api.post("/user", dataSend)
                 .then(responseReturned => {
-                    console.log(responseReturned.data);
+                    localStorage.setItem("token", responseReturned.data.token);
+                    setUserData(decode.default(responseReturned.data.token));
+                    setLogined(true);
                 })
-                .catch(responseReturned => {
-                    console.log(responseReturned);
+                .catch(() => {
+                    alertMessage(
+                        "O nome de usuário escolhido já está sendo usado por outra pessoa",
+                        "danger"
+                    );
                 });
         } else {
             api.post("/user/login", dataSend)
                 .then(responseReturned => {
-                    console.log(responseReturned.data);
+                    localStorage.setItem("token", responseReturned.data.token);
+                    setUserData(decode.default(responseReturned.data.token));
+                    setLogined(true);
                 })
-                .catch(responseReturned => {
-                    console.log(responseReturned);
+                .catch(() => {
+                    alertMessage(
+                        "O nome de usuário ou senha está incorreto",
+                        "danger"
+                    );
                 });
         }
     };

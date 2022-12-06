@@ -4,7 +4,8 @@ export interface IUserData {
     username: string;
     password: string;
     id: number;
-    token: string;
+    iat: number;
+    exp: number;
 }
 
 export interface IContextData {
