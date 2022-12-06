@@ -3,6 +3,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { Store } from "react-notifications-component";
 import * as decode from "jwt-decode";
+import { useNavigate } from "react-router";
 
 import { api } from "../../../../services/api";
 import {
@@ -30,6 +31,7 @@ const Form: React.FC<IProps> = ({ register }) => {
     const [data, setData] = useState<IData>({} as IData);
 
     const { setLogined, setUserData } = useContext(AuthContext);
+    const navigate = useNavigate()
 
     const alertMessage = (msg: string, type: string) => {
         const typeOfAlert = type === "danger" ? "danger" : "success";
@@ -72,6 +74,7 @@ const Form: React.FC<IProps> = ({ register }) => {
                     localStorage.setItem("token", responseReturned.data.token);
                     setUserData(decode.default(responseReturned.data.token));
                     setLogined(true);
+                    navigate("/");
                 })
                 .catch(() => {
                     alertMessage(
@@ -85,6 +88,7 @@ const Form: React.FC<IProps> = ({ register }) => {
                     localStorage.setItem("token", responseReturned.data.token);
                     setUserData(decode.default(responseReturned.data.token));
                     setLogined(true);
+                    navigate("/");
                 })
                 .catch(() => {
                     alertMessage(

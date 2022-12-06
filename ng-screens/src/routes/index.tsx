@@ -22,7 +22,7 @@ const NGRoutes: React.FC = () => {
 
     const Routes = useMemo(
         () => (logined ? <PrivateRoutes /> : <PublicRoutes />),
-        []
+        [logined]
     );
 
     return Routes;

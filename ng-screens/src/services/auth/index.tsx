@@ -28,7 +28,7 @@ const AuthProvider = ({ children }: any) => {
             logined,
             setLogined,
         }),
-        []
+        [logined, userData]
     );
 
     return (

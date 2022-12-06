@@ -31,9 +31,20 @@ export const SContainerContent = styled.div`
     }
 
     & p::after {
-        content: '|';
+        content: "|";
         margin-left: 5px;
-        animation: blink .8s infinite;
+        animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.1;
+        }
     }
 
     @media (max-width: 1100px) {
@@ -54,6 +65,8 @@ export const SContainerContent = styled.div`
 export const SImgHome = styled.img`
     max-height: 50vh;
     max-width: 50vw;
+    border: 2px solid #ffd900;
+    border-radius: 10px;
 
     @media (max-width: 1100px) {
         max-height: 80vh;
