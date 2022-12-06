@@ -16,15 +16,19 @@ const imgHome = require("../../../assets/imgs/imgHome.png");
 const HomePrivate: React.FC = () => {
     const [balance, setBalance] = useState<number>(0.0);
     const { userData } = useContext(AuthContext);
+    const [dataRecovered, setDataRecovered] = useState<boolean>(false);
 
     useEffect(() => {
         document.title = "NG challenge - Home";
 
-        api.get("/account", {
-            headers: { token: localStorage.getItem("token") },
-        }).then(({data}) => {
-            setBalance(data.balance)
-        }).catch(() => {});
+        if(!dataRecovered) {
+            api.get("/account", {
+                headers: { token: localStorage.getItem("token") },
+            }).then(({data}) => {
+                setBalance(data.balance)
+                setDataRecovered(true)
+            }).catch(() => {});
+        }
     }, []);
 
     return (
@@ -36,7 +40,7 @@ const HomePrivate: React.FC = () => {
                 </ScrollAnimation>
                 <article>
                     <SImgHome alt="imagem-carteira" src={imgHome} />
-                    <STitleUserName>{`Saldo: R$ ${balance}.00`}</STitleUserName>
+                    <STitleUserName>{`Saldo: R$ ${balance.toFixed(2)}`}</STitleUserName>
                 </article>
             </SContainerContent>
         </SContain>
