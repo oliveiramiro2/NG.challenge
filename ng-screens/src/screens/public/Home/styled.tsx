@@ -30,6 +30,12 @@ export const SContainerContent = styled.div`
         word-break: keep-all;
     }
 
+    & p::after {
+        content: '|';
+        margin-left: 5px;
+        animation: blink .8s infinite;
+    }
+
     @media (max-width: 1100px) {
         flex-direction: column;
         align-items: center;
