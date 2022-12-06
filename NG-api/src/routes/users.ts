@@ -48,12 +48,18 @@ userRouter.post('/', async (req, res) => {
     const saveAccount = await accountCtrl.create(account)
 
     const transaction = new Transactions(100, new Date(), saveAccount)
-    const saveTransaction = await transactionsCtrl.update(transaction)
+    await transactionsCtrl.update(transaction)
 
     const user = new Users(username, hashPassword, saveAccount)
-    const saveUser = await userCtrl.save(user)
+    await userCtrl.save(user)
 
-    res.json([saveUser, saveTransaction])
+    const token = sign({
+      username: user.username,
+      password: user.password,
+      id: user.id
+    }, 'the sun is small', {expiresIn: "1d"})
+
+    res.json({token})
   }else{
     regexPassword.test(password)
     ? res.status(404).json({message: "Error the username must to be higher than 2 characters and unique"})
