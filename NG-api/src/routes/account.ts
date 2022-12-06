@@ -1,10 +1,20 @@
 import { Router } from "express"
-import { AccountController } from "../controller/accountController"
+import { IPayloadToken } from "../controller/accountController"
+import { verify } from "jsonwebtoken"
+import { userController } from "../controller/userController"
 
 export const accountRouter = Router()
-const accountCtrl = new AccountController()
+const userCtrl = new userController()
 
 accountRouter.get('/', async (req, res) => {
-  const account = await accountCtrl.recoverAccount()
-  res.json(account)
+  try{
+    const token = String(req.headers.token)
+    const payloadToken = verify(token, 'the sun is small')
+
+    const user = await userCtrl.recoverUserById((payloadToken as IPayloadToken).id)
+
+    res.json(user.account)
+  } catch {
+    res.status(401).json({message: "the token is not valid"})
+  }
 })

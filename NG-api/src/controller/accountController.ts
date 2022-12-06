@@ -1,6 +1,14 @@
 import { AppDataSource } from "../data-source";
 import { Accounts } from "../entity/Accounts";
 
+export interface IPayloadToken {
+  username: string;
+  password: string;
+  id: number;
+  iat: number;
+  exp: number;
+}
+
 export class AccountController {
 
   async create(account: Accounts) {
