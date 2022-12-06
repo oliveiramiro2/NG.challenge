@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const SContainerHome = styled.div`
     background-color: #00000058;
-    width: 100vw;
-    height: 100vh;
+    min-width: 100vw;
+    min-height: 100vh;
     border: 0;
     display: flex;
     align-items: center;
