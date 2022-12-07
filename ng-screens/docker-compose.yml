@@ -1,0 +1,9 @@
+version: '3.6'
+services:
+  react:
+    container_name: react
+    restart: always
+    build: .
+    command: yarn start
+    ports:
+      - '3000:3000'
