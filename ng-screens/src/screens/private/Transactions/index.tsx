@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import moment from "moment";
 import { Store } from "react-notifications-component";
+import { MdFilterList } from "react-icons/md";
 
 import { api } from "../../../services/api";
 import HeaderPrivate from "../components/HeaderPrivate";
@@ -23,14 +24,61 @@ interface ITranscationsData {
     id: number;
 }
 
+interface IFilter {
+    credited: boolean;
+    debited: boolean;
+    date: string;
+}
+
+const fakeData = [
+    {
+        value: 100,
+        create_at: "2022-12-05T12:49:30.474Z",
+        id: 8,
+    },
+    {
+        value: 50,
+        create_at: "2022-12-06T04:16:07.526Z",
+        id: 12,
+    },
+    {
+        value: 50,
+        create_at: "2022-12-03T04:16:34.125Z",
+        id: 14,
+    },
+    {
+        value: -50,
+        create_at: "2022-12-06T22:48:26.339Z",
+        id: 19,
+    },
+    {
+        value: -25,
+        create_at: "2022-12-06T22:48:51.767Z",
+        id: 21,
+    },
+];
+
+const filterStart: IFilter = {
+    credited: true,
+    debited: true,
+    date: "",
+};
+
 const Transactions: React.FC = () => {
     const [dataTransactions, setDataTransactions] = useState<
         ITranscationsData[]
     >([]);
+    const [dataTransactionsFilted, setDataTransactionsFilted] = useState<
+        ITranscationsData[]
+    >([]);
+    const [, setForce] = useState<ITranscationsData[]>([]);
     const [transaction, setTransaction] = useState<ITransactions>(
         {} as ITransactions
     );
     const [dataRecovered, setDataRecovered] = useState<boolean>(false);
+    const [filter, setFilter] = useState<boolean>(false);
+    const [typeFilter, setTypeFilter] = useState<IFilter>(filterStart);
+
     const { userData } = useContext(AuthContext);
 
     const alertMessage = (msg: string, type: string) => {
@@ -62,7 +110,14 @@ const Transactions: React.FC = () => {
                     "Desculpe, não foi possível encontrar suas transferências.",
                     "danger"
                 );
+                setDataTransactions(fakeData);
+                setDataRecovered(true);
             });
+    };
+
+    const adjustDate: Function = (date: string): string => {
+        const [mes, dia, ano] = date.split("/");
+        return `${dia}/${mes}/${ano}`;
     };
 
     useEffect(() => {
@@ -72,6 +127,35 @@ const Transactions: React.FC = () => {
             makeRequest();
         }
     }, []);
+
+    useEffect(() => {
+        if (filter) {
+            setDataTransactionsFilted(value => {
+                let reset: any = value;
+                reset = [];
+                return reset;
+            });
+            setDataTransactionsFilted(value => {
+                if (typeFilter.credited && typeFilter.date === "") {
+                    dataTransactions.forEach(
+                        valueT => valueT.value > 0 && value.push(valueT)
+                    );
+                }
+                if (typeFilter.debited && typeFilter.date === "") {
+                    dataTransactions.forEach(
+                        valueT => valueT.value < 0 && value.push(valueT)
+                    );
+                }
+                return value;
+            });
+        }
+        setForce(dataTransactionsFilted);
+        setForce([]);
+        /* console.log(
+            dataTransactionsFilted,
+            adjustDate(moment(typeFilter.date).format("L"))
+        ); */
+    }, [typeFilter, filter]);
 
     const sendData: Function = () => {
         if (
@@ -143,20 +227,94 @@ const Transactions: React.FC = () => {
 
             <SContainTransactions>
                 <p>Transações realizadas</p>
+                <aside>
+                    <button type="button" onClick={() => setFilter(!filter)}>
+                        <p>
+                            <MdFilterList /> Filtrar
+                        </p>
+                    </button>
+                    {filter && (
+                        <nav>
+                            <div>
+                                <input
+                                    checked={typeFilter.debited}
+                                    onChange={() =>
+                                        setTypeFilter({
+                                            ...typeFilter,
+                                            debited: !typeFilter.debited,
+                                        })
+                                    }
+                                    type="checkbox"
+                                />
+                                <span>Debitados</span>
+                            </div>
+                            <div>
+                                <input
+                                    checked={typeFilter.credited}
+                                    onChange={() =>
+                                        setTypeFilter({
+                                            ...typeFilter,
+                                            credited: !typeFilter.credited,
+                                        })
+                                    }
+                                    type="checkbox"
+                                />
+                                <span>Creditados</span>
+                            </div>
+                            <div>
+                                <span>Data</span>
+                                <input
+                                    defaultValue={typeFilter.date}
+                                    onChange={e =>
+                                        setTypeFilter({
+                                            ...typeFilter,
+                                            date: e.target.value,
+                                        })
+                                    }
+                                    type="date"
+                                />
+                            </div>
+                        </nav>
+                    )}
+                </aside>
                 <article>
-                    {dataTransactions.map(value => (
-                        <SContainTransactionCard key={value.id}>
-                            <strong>
-                                {value.value < 0 ? "Debitado" : "Creditado"}
-                            </strong>
-                            <span>
-                                {"\n"}Valor: {value.value}
-                            </span>
-                            <span>
-                                Data: {moment(value.create_at).format("L")}
-                            </span>
-                        </SContainTransactionCard>
-                    ))}
+                    {filter
+                        ? dataTransactionsFilted.map(value => (
+                              <SContainTransactionCard key={value.id}>
+                                  <strong>
+                                      {value.value < 0
+                                          ? "Debitado"
+                                          : "Creditado"}
+                                  </strong>
+                                  <span>
+                                      {"\n"}Valor: {value.value}
+                                  </span>
+                                  <span>
+                                      Data:{" "}
+                                      {adjustDate(
+                                          moment(value.create_at).format("L")
+                                      )}
+                                  </span>
+                              </SContainTransactionCard>
+                          ))
+                        : dataTransactions.map(value => (
+                              <SContainTransactionCard key={value.id}>
+                                  <strong>
+                                      {value.value < 0
+                                          ? "Debitado"
+                                          : "Creditado"}
+                                  </strong>
+                                  <span>
+                                      {"\n"}Valor: {value.value}
+                                  </span>
+                                  <span>
+                                      Data:{" "}
+                                      {adjustDate(
+                                          moment(value.create_at).format("L")
+                                      )}
+                                  </span>
+                              </SContainTransactionCard>
+                          ))}
                 </article>
             </SContainTransactions>
         </SContain>
