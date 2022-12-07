@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   db:
-    container_name: ngapi
+    container_name: psql
     image: postgres:latest
     environment:
       POSTGRES_PASSWORD: 123456
@@ -10,4 +10,13 @@ services:
     volumes:
       - ./pgdata:/data/postgresql
     ports:
-      - "5433:5432"
+      - "5432:5432"
+  app:
+    container_name: node
+    restart: always
+    build: .
+    command: yarn start
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db

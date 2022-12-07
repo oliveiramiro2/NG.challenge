@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { verify } from "jsonwebtoken";
 import { AccountController, IPayloadToken } from "../controller/accountController";
-import { TransactionController } from "../controller/TransactionController";
+import { TransactionController } from "../controller/transactionController";
 import { userController } from "../controller/userController";
 import { Transactions } from "../entity/Transactions";
 
